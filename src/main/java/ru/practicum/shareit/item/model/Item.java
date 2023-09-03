@@ -1,14 +1,13 @@
-package ru.practicum.shareit.item;
+package ru.practicum.shareit.item.model;
 
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
-import ru.practicum.shareit.request.ItemRequest;
-import ru.practicum.shareit.user.User;
+import lombok.*;
+import ru.practicum.shareit.request.model.ItemRequest;
+import ru.practicum.shareit.user.model.User;
 
-@Getter
-@Setter
-@EqualsAndHashCode
+@Builder
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class Item {
     private long id;
     private String name;
