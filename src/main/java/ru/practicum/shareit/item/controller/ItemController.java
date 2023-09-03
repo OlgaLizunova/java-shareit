@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ItemController {
     private final ItemService itemService;
-    private final String HEADER1 = "X-Sharer-User-Id";
+    private final String HEADER1 = "^X-Sharer-User-Id*$";
 
     @PostMapping
     public ItemDto addItem(@RequestHeader(HEADER1) @NotNull long userId,
