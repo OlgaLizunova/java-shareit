@@ -19,17 +19,17 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ItemController {
     private final ItemService itemService;
-    private final String header1 = "X-Sharer-User-Id";
+    static final String HEADER = "X-Sharer-User-Id";
 
     @PostMapping
-    public ItemDto addItem(@RequestHeader(value = header1) @NotNull long userId,
+    public ItemDto addItem(@RequestHeader(HEADER) @NotNull long userId,
                            @RequestBody ItemDto itemDto) {
         Item item = ItemMapper.toItem(itemDto);
         return ItemMapper.toItemDto(itemService.addItem(userId, item));
     }
 
     @PatchMapping("/{itemId}")
-    public ItemDto updateItem(@RequestHeader(value = header1) @NotNull long userId,
+    public ItemDto updateItem(@RequestHeader(HEADER) @NotNull long userId,
                               @RequestBody ItemDto itemDto,
                               @PathVariable long itemId) {
         Item updatedItem = ItemMapper.toItem(itemDto);
@@ -43,7 +43,7 @@ public class ItemController {
     }
 
     @GetMapping
-    public Collection<ItemDto> getUserItems(@RequestHeader(value = header1) @NotNull long userId) {
+    public Collection<ItemDto> getUserItems(@RequestHeader(HEADER) @NotNull long userId) {
         return itemService.getUserItems(userId)
                 .stream()
                 .map(ItemMapper::toItemDto)

@@ -4,11 +4,12 @@ import ru.practicum.shareit.booking.model.Booking;
 
 public class BookingMapper {
     public static BookingDto toBookingDto(Booking booking) {
-        return new BookingDto(
-                booking.getStart(),
-                booking.getEnd(),
-                booking.getItem().getId(),
-                booking.getBooker().getId(),
-                booking.getStatus());
+        return BookingDto.builder()
+                .start(booking.getStart())
+                .end(booking.getEnd())
+                .item(booking.getItem().getId())
+                .booker(booking.getBooker().getId())
+                .status(booking.getStatus())
+                .build();
     }
 }

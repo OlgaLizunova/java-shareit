@@ -6,8 +6,6 @@ import ru.practicum.shareit.user.model.User;
 
 @Builder
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
 public class Item {
     private long id;
     private String name;
@@ -15,10 +13,4 @@ public class Item {
     private Boolean available;
     private User owner;
     private ItemRequest request;
-
-    public Item(String name, String description, Boolean available) {
-        this.name = name;
-        this.description = description;
-        this.available = available;
-    }
 }
