@@ -197,7 +197,7 @@ public class ItemServiceImpl implements ItemService {
     }
 
     private void checkAccess(User owner, Item itemForUpdate) {
-        if (itemForUpdate.getOwner().getId() == (owner.getId())) {
+        if (itemForUpdate.getOwner().getId().equals(owner.getId())) {
             return;
         }
         throw new NotOwnerException("Только владелец имеет доступ к вещи");
