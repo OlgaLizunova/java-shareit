@@ -1,4 +1,4 @@
-package ru.practicum.shareit.item.dto;
+package ru.practicum.shareit.item.comment.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -12,14 +12,8 @@ import javax.validation.constraints.NotNull;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class ItemDto {
-    private long id;
+public class CommentInputDto {
     @NotNull
     @NotBlank
-    private String name;
-    @NotNull
-    @NotBlank
-    private String description;
-    @NotNull
-    private Boolean available;
+    private String text;
 }

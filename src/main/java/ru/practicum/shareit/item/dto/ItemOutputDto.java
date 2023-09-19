@@ -4,22 +4,18 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
+import ru.practicum.shareit.booking.dto.BookingForItemDto;
 
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class ItemDto {
+public class ItemOutputDto {
     private long id;
-    @NotNull
-    @NotBlank
     private String name;
-    @NotNull
-    @NotBlank
     private String description;
-    @NotNull
     private Boolean available;
+    private BookingForItemDto lastBooking;
+    private BookingForItemDto nextBooking;
+
 }
