@@ -2,6 +2,7 @@ package ru.practicum.shareit.item.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.item.comment.dto.CommentInputDto;
 import ru.practicum.shareit.item.comment.dto.SavedCommentOutputDto;
@@ -10,16 +11,20 @@ import ru.practicum.shareit.item.dto.ItemWithCommentsOutputDto;
 import ru.practicum.shareit.item.service.ItemService;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
-
 
 @Slf4j
 @RestController
 @RequestMapping("/items")
 @RequiredArgsConstructor
+@Validated
 public class ItemController {
     private final ItemService itemService;
     private static final String HEADER = "X-Sharer-User-Id";
+    private static final String DEFAULT_SIZE = "25";
+    private static final String DEFAULT_FROM = "0";
 
     @PostMapping
     public ItemDto postItem(@RequestHeader(value = HEADER) long ownerId,
@@ -56,16 +61,22 @@ public class ItemController {
     }
 
     @GetMapping("")
-    public List<ItemWithCommentsOutputDto> getAllOwnersItems(@RequestHeader(value = HEADER) long ownerId
+    public List<ItemWithCommentsOutputDto> getAllOwnersItems(@RequestHeader(value = HEADER) long ownerId,
+                                                             @RequestParam(value = "from",
+                                                                     defaultValue = DEFAULT_FROM) @PositiveOrZero int from,
+                                                             @RequestParam(value = "size",
+                                                                     defaultValue = DEFAULT_SIZE) @Positive int size
     ) {
-        log.info("получен GET запрос на показ всех вещей владельца с ownerId={}", ownerId);
-        return itemService.getAllOwnersItems(ownerId);
+        log.info("получен GET запрос на показ всех вещей владельца с ownerId={} from={} size={}", ownerId, from, size);
+        return itemService.getAllOwnersItems(ownerId, from, size);
     }
 
     @GetMapping("/search")
-    public List<ItemDto> findItems(@RequestParam(value = "text") String text
+    public List<ItemDto> findItems(@RequestParam(value = "text") String text,
+                                   @RequestParam(value = "from", defaultValue = DEFAULT_FROM) @PositiveOrZero int from,
+                                   @RequestParam(value = "size", defaultValue = DEFAULT_SIZE) @Positive int size
     ) {
-        log.info("получен GET запрос найти все вещи с текстом text={}", text);
-        return itemService.findItems(text);
+        log.info("получен GET запрос найти все вещи с текстом text={} from={} size={}", text, from, size);
+        return itemService.findItems(text, from, size);
     }
 }

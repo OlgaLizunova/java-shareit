@@ -10,12 +10,13 @@ import ru.practicum.shareit.booking.dto.BookingInputDto;
 import ru.practicum.shareit.booking.dto.BookingOutputDto;
 import ru.practicum.shareit.item.dto.mapper.ItemMapper;
 import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.request.dto.mapper.ItemRequestMapper;
 import ru.practicum.shareit.user.dto.mapper.UserMapper;
 import ru.practicum.shareit.user.model.User;
 
 import java.util.List;
 
-@Mapper(componentModel = "spring", uses = {ItemMapper.class, UserMapper.class})
+@Mapper(componentModel = "spring", uses = {ItemMapper.class, UserMapper.class, ItemRequestMapper.class})
 public interface BookingMapper {
     BookingMapper INSTANCE = Mappers.getMapper(BookingMapper.class);
 

@@ -8,6 +8,8 @@ import ru.practicum.shareit.booking.dto.BookingOutputDto;
 import ru.practicum.shareit.booking.service.BookingService;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
 
 @Slf4j
@@ -17,6 +19,8 @@ import java.util.List;
 public class BookingController {
     private final BookingService bookingService;
     private static final String HEADER = "X-Sharer-User-Id";
+    private static final String DEFAULT_SIZE = "25";
+    private static final String DEFAULT_FROM = "0";
 
     @PostMapping()
     public BookingOutputDto addBooking(@RequestHeader(value = HEADER) long bookerId,
@@ -42,12 +46,20 @@ public class BookingController {
         return bookingService.getBookingByIdAndBookerId(bookingId, userId);
     }
 
-    @GetMapping()
+    @GetMapping("")
     List<BookingOutputDto> getAllUsersBooking(@RequestHeader(value = HEADER) long bookerId,
                                               @RequestParam(value = "state",
-                                                      defaultValue = "ALL") String stateParam) {
+                                                      defaultValue = "ALL") String stateParam,
+                                              @RequestParam(value = "from",
+                                                      defaultValue = DEFAULT_FROM) @Positive int from,
+                                              @RequestParam(value = "size",
+                                                      defaultValue = DEFAULT_SIZE) @Positive int size) {
 
-        log.info("получен GET запрос на просмотр всех бронирований для bookerId={}, state={}", bookerId, stateParam);
+        log.info("получен GET запрос на просмотр всех бронирований для bookerId={}, state={}, from={}, size={}",
+                bookerId, stateParam, from, size);
+        if (from < 0) {
+            throw new IllegalArgumentException(String.format("Unknown state: %s", stateParam));
+        }
         State state;
         try {
             state = State.valueOf(stateParam);
@@ -55,15 +67,23 @@ public class BookingController {
             log.error("Unknown state: {}", stateParam);
             throw new IllegalArgumentException(String.format("Unknown state: %s", stateParam));
         }
-        return bookingService.getAllUsersBookings(bookerId, state);
+        return bookingService.getAllUsersBookings(bookerId, state, from, size);
     }
 
 
     @GetMapping("/owner")
     List<BookingOutputDto> getAllOwnersBooking(@RequestHeader(value = HEADER) long ownerId,
                                                @RequestParam(value = "state",
-                                                       defaultValue = "ALL") String stateParam) {
-        log.info("получен GET на просмотр всех пронирований для owner={}, state={}", ownerId, stateParam);
+                                                       defaultValue = "ALL") String stateParam,
+                                               @RequestParam(value = "from",
+                                                       defaultValue = DEFAULT_FROM) @PositiveOrZero int from,
+                                               @RequestParam(value = "size",
+                                                       defaultValue = DEFAULT_SIZE) @Positive int size) {
+        log.info("получен GET на просмотр всех пронирований для owner={}, state={}, from={}, size={}",
+                ownerId, stateParam, from, size);
+        if (from < 0) {
+            throw new IllegalArgumentException(String.format("Unknown state: %s", stateParam));
+        }
         State state;
         try {
             state = State.valueOf(stateParam);
@@ -72,6 +92,6 @@ public class BookingController {
             throw new IllegalArgumentException("Unknown state: UNSUPPORTED_STATUS");
         }
 
-        return bookingService.getAllOwnersBookings(ownerId, state);
+        return bookingService.getAllOwnersBookings(ownerId, state, from, size);
     }
 }
