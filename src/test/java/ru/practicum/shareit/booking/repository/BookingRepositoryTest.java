@@ -5,6 +5,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.model.Status;
 import ru.practicum.shareit.item.comment.repository.CommentRepository;
@@ -51,8 +54,11 @@ class BookingRepositoryTest {
     Booking booking3;
     Booking booking4;
 
+    PageRequest pageable;
+
     @BeforeEach
     void setUp() {
+
         booker1 = User.builder()
                 .name("Маша")
                 .email("masha@mail.ru")
@@ -91,6 +97,7 @@ class BookingRepositoryTest {
         booking3 = new Booking(0L, null, null, item2, booker1, status);
         booking4 = new Booking(0L, null, null, item2, booker2, status);
 
+        pageable = PageRequest.of(0, 25, Sort.Direction.DESC, "id");
     }
 
     @AfterEach
@@ -175,4 +182,187 @@ class BookingRepositoryTest {
                 () -> assertThat(nextBookingsForItems, hasItem(booking4))
         );
     }
+
+    @Test
+    void findAllByBooker_Id() {
+        LocalDateTime start1 = now().minusDays(10);
+        LocalDateTime start2 = now().plusDays(20);
+        LocalDateTime end1 = now().plusDays(10);
+        LocalDateTime end2 = now().plusDays(30);
+
+        LocalDateTime start3 = now().minusDays(5);
+        LocalDateTime start4 = now().plusDays(15);
+        LocalDateTime end3 = now().plusDays(15);
+        LocalDateTime end4 = now().plusDays(25);
+
+        booking1.setStart(start1);
+        booking2.setStart(start2);
+        booking3.setStart(start3);
+        booking4.setStart(start4);
+        booking1.setEnd(end1);
+        booking2.setEnd(end2);
+        booking3.setEnd(end3);
+        booking4.setEnd(end4);
+
+        booking1 = bookingRepository.save(booking1);
+        booking2 = bookingRepository.save(booking2);
+        booking3 = bookingRepository.save(booking3);
+        booking4 = bookingRepository.save(booking4);
+
+        List<Booking> ownerBookings = bookingRepository.findAllByBooker_Id(21L, pageable );
+        assertAll(
+                () -> assertNotNull(ownerBookings),
+                () -> assertEquals(2, ownerBookings.size()),
+                () -> assertThat(ownerBookings, hasItem(booking1)),
+                () -> assertThat(ownerBookings, hasItem(booking3))
+        );
+    }
+
+    @Test
+    void findAllByBooker_IdAndEndBefore() {
+        LocalDateTime start1 = now().minusDays(10);
+        LocalDateTime start2 = now().plusDays(20);
+        LocalDateTime end1 = now().plusDays(10);
+        LocalDateTime end2 = now().plusDays(30);
+
+        LocalDateTime start3 = now().minusDays(5);
+        LocalDateTime start4 = now().plusDays(15);
+        LocalDateTime end3 = now().plusDays(15);
+        LocalDateTime end4 = now().plusDays(25);
+
+        booking1.setStart(start1);
+        booking2.setStart(start2);
+        booking3.setStart(start3);
+        booking4.setStart(start4);
+        booking1.setEnd(end1);
+        booking2.setEnd(end2);
+        booking3.setEnd(end3);
+        booking4.setEnd(end4);
+
+        booking1 = bookingRepository.save(booking1);
+        booking2 = bookingRepository.save(booking2);
+        booking3 = bookingRepository.save(booking3);
+        booking4 = bookingRepository.save(booking4);
+        pageable = PageRequest.of(0, 25, Sort.Direction.DESC, "id");
+
+        List<Booking> ownerBookings1 = bookingRepository.findAllByBooker_IdAndEndBefore(1L, now().plusDays(10),
+                pageable );
+        assertAll(
+                () -> assertNotNull(ownerBookings1),
+                () -> assertEquals(1, ownerBookings1.size()),
+                () -> assertThat(ownerBookings1, hasItem(booking1))
+        );
+    }
+
+    @Test
+    void findAllByBooker_IdAndStartAfter() {
+        LocalDateTime start1 = now().minusDays(10);
+        LocalDateTime start2 = now().plusDays(20);
+        LocalDateTime end1 = now().plusDays(10);
+        LocalDateTime end2 = now().plusDays(30);
+
+        LocalDateTime start3 = now().minusDays(5);
+        LocalDateTime start4 = now().plusDays(15);
+        LocalDateTime end3 = now().plusDays(15);
+        LocalDateTime end4 = now().plusDays(25);
+
+        booking1.setStart(start1);
+        booking2.setStart(start2);
+        booking3.setStart(start3);
+        booking4.setStart(start4);
+        booking1.setEnd(end1);
+        booking2.setEnd(end2);
+        booking3.setEnd(end3);
+        booking4.setEnd(end4);
+
+        booking1 = bookingRepository.save(booking1);
+        booking2 = bookingRepository.save(booking2);
+        booking3 = bookingRepository.save(booking3);
+        booking4 = bookingRepository.save(booking4);
+        pageable = PageRequest.of(0, 25, Sort.Direction.DESC, "id");
+
+        List<Booking> ownerBookings = bookingRepository.findAllByBooker_IdAndStartAfter(13L, now().minusDays(6),
+                pageable );
+        assertAll(
+                () -> assertNotNull(ownerBookings),
+                () -> assertEquals(1, ownerBookings.size()),
+                () -> assertThat(ownerBookings, hasItem(booking3))
+        );
+    }
+
+    @Test
+    void findAllByBooker_IdAndStartBeforeAndEndAfter() {
+        LocalDateTime start1 = now().minusDays(10);
+        LocalDateTime start2 = now().plusDays(20);
+        LocalDateTime end1 = now().plusDays(10);
+        LocalDateTime end2 = now().plusDays(30);
+
+        LocalDateTime start3 = now().minusDays(5);
+        LocalDateTime start4 = now().plusDays(15);
+        LocalDateTime end3 = now().plusDays(15);
+        LocalDateTime end4 = now().plusDays(25);
+
+        booking1.setStart(start1);
+        booking2.setStart(start2);
+        booking3.setStart(start3);
+        booking4.setStart(start4);
+        booking1.setEnd(end1);
+        booking2.setEnd(end2);
+        booking3.setEnd(end3);
+        booking4.setEnd(end4);
+
+        booking1 = bookingRepository.save(booking1);
+        booking2 = bookingRepository.save(booking2);
+        booking3 = bookingRepository.save(booking3);
+        booking4 = bookingRepository.save(booking4);
+        pageable = PageRequest.of(0, 25, Sort.Direction.DESC, "id");
+
+        List<Booking> ownerBookings = bookingRepository.findAllByBooker_IdAndStartBeforeAndEndAfter(25L,
+                now().minusDays(4), now().plusDays(5), pageable );
+        assertAll(
+                () -> assertNotNull(ownerBookings),
+                () -> assertEquals(2, ownerBookings.size()),
+                () -> assertThat(ownerBookings, hasItem(booking1)),
+                () -> assertThat(ownerBookings, hasItem(booking3))
+        );
+    }
+
+    @Test
+    void findAllByBooker_IdAndStatus() {
+        LocalDateTime start1 = now().minusDays(10);
+        LocalDateTime start2 = now().plusDays(20);
+        LocalDateTime end1 = now().plusDays(10);
+        LocalDateTime end2 = now().plusDays(30);
+
+        LocalDateTime start3 = now().minusDays(5);
+        LocalDateTime start4 = now().plusDays(15);
+        LocalDateTime end3 = now().plusDays(15);
+        LocalDateTime end4 = now().plusDays(25);
+
+        booking1.setStart(start1);
+        booking2.setStart(start2);
+        booking3.setStart(start3);
+        booking4.setStart(start4);
+        booking1.setEnd(end1);
+        booking2.setEnd(end2);
+        booking3.setEnd(end3);
+        booking4.setEnd(end4);
+
+        booking1 = bookingRepository.save(booking1);
+        booking2 = bookingRepository.save(booking2);
+        booking3 = bookingRepository.save(booking3);
+        booking4 = bookingRepository.save(booking4);
+        pageable = PageRequest.of(0, 25, Sort.Direction.DESC, "id");
+
+        List<Booking> ownerBookings = bookingRepository.findAllByBooker_IdAndStatus(17L,
+                Status.APPROVED, pageable );
+        assertAll(
+                () -> assertNotNull(ownerBookings),
+                () -> assertEquals(2, ownerBookings.size()),
+                () -> assertThat(ownerBookings, hasItem(booking1)),
+                () -> assertThat(ownerBookings, hasItem(booking3))
+        );
+    }
+
+
 }
