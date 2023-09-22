@@ -21,13 +21,13 @@ import static org.junit.jupiter.api.Assertions.*;
 @DataJpaTest
 class CommentRepositoryTest {
     @Autowired
-    ItemRequestRepository requestRepository;
+    private ItemRequestRepository requestRepository;
     @Autowired
-    ItemRepository itemRepository;
+    private ItemRepository itemRepository;
     @Autowired
-    UserRepository userRepository;
+    private UserRepository userRepository;
     @Autowired
-    CommentRepository commentRepository;
+    private CommentRepository commentRepository;
 
     @Test
     void findAllInItemId() {

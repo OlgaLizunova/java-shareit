@@ -26,6 +26,7 @@ import ru.practicum.shareit.user.repository.UserRepository;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 
 @Slf4j
@@ -94,7 +95,17 @@ public class BookingServiceImpl implements BookingService {
 
     @Transactional(readOnly = true)
     @Override
-    public List<BookingOutputDto> getAllUsersBookings(Long bookerId, State state, int from, int size) {
+    public List<BookingOutputDto> getAllUsersBookings(Long bookerId, String stateParam, int from, int size) {
+        if (from < 0) {
+            throw new IllegalArgumentException(String.format("illegal from: %s", from));
+        }
+        State state;
+        try {
+            state = State.valueOf(stateParam.toUpperCase(Locale.ROOT));
+        } catch (IllegalArgumentException e) {
+            log.error("Unknown state: {}", stateParam);
+            throw new IllegalArgumentException(String.format("Unknown state: %s", stateParam));
+        }
         findUserById(bookerId);
         List<Booking> allUsersBookings = new ArrayList<>();
         Pageable sortedByStart = PageRequestUtil.of(from, size, Sort.by(Sort.Direction.DESC, "start"));
@@ -130,7 +141,17 @@ public class BookingServiceImpl implements BookingService {
 
     @Transactional(readOnly = true)
     @Override
-    public List<BookingOutputDto> getAllOwnersBookings(Long ownerId, State state, int from, int size) {
+    public List<BookingOutputDto> getAllOwnersBookings(Long ownerId, String stateParam, int from, int size) {
+        if (from < 0) {
+            throw new IllegalArgumentException(String.format("illegal from: %s", from));
+        }
+        State state;
+        try {
+            state = State.valueOf(stateParam.toUpperCase(Locale.ROOT));
+        } catch (IllegalArgumentException e) {
+            log.error("Unknown state: UNSUPPORTED_STATUS={}", stateParam);
+            throw new IllegalArgumentException("Unknown state: UNSUPPORTED_STATUS");
+        }
         findUserById(ownerId);
         List<Booking> allUsersBookings = new ArrayList<>();
         Pageable sortedByStart = PageRequestUtil.of(from, size, Sort.by(Sort.Direction.DESC, "start"));

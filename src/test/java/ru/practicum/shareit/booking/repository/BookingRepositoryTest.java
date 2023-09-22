@@ -6,7 +6,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.model.Status;
@@ -28,33 +27,33 @@ import static org.junit.jupiter.api.Assertions.*;
 @DataJpaTest
 class BookingRepositoryTest {
     @Autowired
-    ItemRequestRepository requestRepository;
+    private ItemRequestRepository requestRepository;
     @Autowired
-    ItemRepository itemRepository;
+    private ItemRepository itemRepository;
     @Autowired
-    UserRepository userRepository;
+    private UserRepository userRepository;
     @Autowired
-    CommentRepository commentRepository;
+    private CommentRepository commentRepository;
     @Autowired
-    BookingRepository bookingRepository;
+    private BookingRepository bookingRepository;
 
-    Status status = Status.APPROVED;
-    User booker1;
-    User booker2;
-    User owner1;
-    User owner2;
+    private Status status = Status.APPROVED;
+    private User booker1;
+    private User booker2;
+    private User owner1;
+    private User owner2;
 
-    Item item1;
-    Item item2;
-    Item item3;
-    Item item4;
+    private Item item1;
+    private Item item2;
+    private Item item3;
+    private Item item4;
 
-    Booking booking1;
-    Booking booking2;
-    Booking booking3;
-    Booking booking4;
+    private Booking booking1;
+    private Booking booking2;
+    private Booking booking3;
+    private Booking booking4;
 
-    PageRequest pageable;
+    private PageRequest pageable;
 
     @BeforeEach
     void setUp() {

@@ -35,7 +35,7 @@ class ItemRequestControllerIntegrationTest {
     @Autowired
     private ObjectMapper mapper;
     @MockBean
-    ItemRequestService itemRequestService;
+    private ItemRequestService itemRequestService;
     private static ItemRequestInputDto itemRequestInputDto;
     private static ItemRequestOutDto itemRequestOutDto;
     private static final String HEADER = "X-Sharer-User-Id";

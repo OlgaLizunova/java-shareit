@@ -26,7 +26,6 @@ public class UserServiceImpl implements UserService {
     public UserDto addUser(UserDto newUserDto) {
         User newUser = userMapper.toUser(newUserDto);
         User addedUser = userRepository.save(newUser);
-        log.info("Был добавлен пользователь={}", addedUser);
         return userMapper.toUserDto(addedUser);
     }
 

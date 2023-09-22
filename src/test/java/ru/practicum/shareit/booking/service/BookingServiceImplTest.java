@@ -10,7 +10,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
-import ru.practicum.shareit.booking.controller.State;
 import ru.practicum.shareit.booking.dto.BookingInputDto;
 import ru.practicum.shareit.booking.dto.BookingOutputDto;
 import ru.practicum.shareit.booking.dto.mapper.BookingMapper;
@@ -423,7 +422,7 @@ class BookingServiceImplTest {
         when(bookingMapper.map(allUsersBookings)).thenReturn(returnedBookingsOutputDto);
 
         List<BookingOutputDto> resultUserBookingsOutputDto =
-                bookingService.getAllUsersBookings(bookerId, State.ALL, from, size);
+                bookingService.getAllUsersBookings(bookerId, "all", from, size);
 
         InOrder inOrder = inOrder(userRepository, bookingRepository, bookingMapper);
         inOrder.verify(userRepository).findById(bookerId);
@@ -471,7 +470,7 @@ class BookingServiceImplTest {
         when(bookingMapper.map(usersBookings)).thenReturn(returnedBookingsOutputDto);
 
         List<BookingOutputDto> resultUserBookingsOutputDto =
-                bookingService.getAllUsersBookings(bookerId, State.PAST, from, size);
+                bookingService.getAllUsersBookings(bookerId, "past", from, size);
 
         InOrder inOrder = inOrder(userRepository, bookingRepository, bookingMapper);
         inOrder.verify(userRepository).findById(bookerId);
@@ -524,7 +523,7 @@ class BookingServiceImplTest {
         when(bookingMapper.map(usersBookings)).thenReturn(returnedBookingsOutputDto);
 
         List<BookingOutputDto> resultUserBookingsOutputDto =
-                bookingService.getAllUsersBookings(bookerId, State.CURRENT, from, size);
+                bookingService.getAllUsersBookings(bookerId, "current", from, size);
 
         InOrder inOrder = inOrder(userRepository, bookingRepository, bookingMapper);
         inOrder.verify(userRepository).findById(bookerId);
@@ -575,7 +574,7 @@ class BookingServiceImplTest {
         when(bookingMapper.map(usersBookings)).thenReturn(returnedBookingsOutputDto);
 
         List<BookingOutputDto> resultUserBookingsOutputDto =
-                bookingService.getAllUsersBookings(bookerId, State.WAITING, from, size);
+                bookingService.getAllUsersBookings(bookerId, "waiting", from, size);
 
         InOrder inOrder = inOrder(userRepository, bookingRepository, bookingMapper);
         inOrder.verify(userRepository).findById(bookerId);
@@ -626,7 +625,7 @@ class BookingServiceImplTest {
         when(bookingMapper.map(usersBookings)).thenReturn(returnedBookingsOutputDto);
 
         List<BookingOutputDto> resultUserBookingsOutputDto =
-                bookingService.getAllUsersBookings(bookerId, State.REJECTED, from, size);
+                bookingService.getAllUsersBookings(bookerId, "rejected", from, size);
 
         InOrder inOrder = inOrder(userRepository, bookingRepository, bookingMapper);
         inOrder.verify(userRepository).findById(bookerId);
@@ -641,7 +640,7 @@ class BookingServiceImplTest {
         when(userRepository.findById(userId)).thenReturn(Optional.empty());
 
         assertThrows(ElementNotFoundException.class,
-                () -> bookingService.getAllUsersBookings(userId, State.ALL, from, size));
+                () -> bookingService.getAllUsersBookings(userId, "all", from, size));
 
         verify(userRepository).findById(userId);
     }
@@ -683,7 +682,7 @@ class BookingServiceImplTest {
         when(bookingMapper.map(allUsersBookings)).thenReturn(returnedBookingsOutputDto);
 
         List<BookingOutputDto> resultUserBookingsOutputDto =
-                bookingService.getAllOwnersBookings(ownerId1, State.ALL, from, size);
+                bookingService.getAllOwnersBookings(ownerId1, "all", from, size);
 
         InOrder inOrder = inOrder(userRepository, bookingRepository, bookingMapper);
         inOrder.verify(userRepository).findById(ownerId1);
@@ -733,7 +732,7 @@ class BookingServiceImplTest {
         when(bookingMapper.map(usersBookings)).thenReturn(returnedBookingsOutputDto);
 
         List<BookingOutputDto> resultUserBookingsOutputDto =
-                bookingService.getAllOwnersBookings(ownerId1, State.PAST, from, size);
+                bookingService.getAllOwnersBookings(ownerId1, "past", from, size);
 
         InOrder inOrder = inOrder(userRepository, bookingRepository, bookingMapper);
         inOrder.verify(userRepository).findById(ownerId1);
@@ -783,7 +782,7 @@ class BookingServiceImplTest {
         when(bookingMapper.map(usersBookings)).thenReturn(returnedBookingsOutputDto);
 
         List<BookingOutputDto> resultUserBookingsOutputDto =
-                bookingService.getAllOwnersBookings(ownerId1, State.FUTURE, from, size);
+                bookingService.getAllOwnersBookings(ownerId1, "future", from, size);
 
         InOrder inOrder = inOrder(userRepository, bookingRepository, bookingMapper);
         inOrder.verify(userRepository).findById(ownerId1);
@@ -833,7 +832,7 @@ class BookingServiceImplTest {
         when(bookingMapper.map(usersBookings)).thenReturn(returnedBookingsOutputDto);
 
         List<BookingOutputDto> resultUserBookingsOutputDto =
-                bookingService.getAllOwnersBookings(ownerId1, State.CURRENT, from, size);
+                bookingService.getAllOwnersBookings(ownerId1, "current", from, size);
 
         InOrder inOrder = inOrder(userRepository, bookingRepository, bookingMapper);
         inOrder.verify(userRepository).findById(ownerId1);
@@ -895,7 +894,7 @@ class BookingServiceImplTest {
         when(bookingMapper.map(usersBookings)).thenReturn(returnedBookingsOutputDto);
 
         List<BookingOutputDto> resultUserBookingsOutputDto =
-                bookingService.getAllOwnersBookings(ownerId1, State.WAITING, from, size);
+                bookingService.getAllOwnersBookings(ownerId1, "waiting", from, size);
 
         InOrder inOrder = inOrder(userRepository, bookingRepository, bookingMapper);
         inOrder.verify(userRepository).findById(ownerId1);
@@ -945,7 +944,7 @@ class BookingServiceImplTest {
         when(bookingMapper.map(usersBookings)).thenReturn(returnedBookingsOutputDto);
 
         List<BookingOutputDto> resultUserBookingsOutputDto =
-                bookingService.getAllOwnersBookings(ownerId1, State.REJECTED, from, size);
+                bookingService.getAllOwnersBookings(ownerId1, "rejected", from, size);
 
         InOrder inOrder = inOrder(userRepository, bookingRepository, bookingMapper);
         inOrder.verify(userRepository).findById(ownerId1);
@@ -961,7 +960,7 @@ class BookingServiceImplTest {
         when(userRepository.findById(userId)).thenReturn(Optional.empty());
 
         assertThrows(ElementNotFoundException.class,
-                () -> bookingService.getAllOwnersBookings(userId, State.ALL, from, size));
+                () -> bookingService.getAllOwnersBookings(userId, "all", from, size));
 
         verify(userRepository).findById(userId);
     }

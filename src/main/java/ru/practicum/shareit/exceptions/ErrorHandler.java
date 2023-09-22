@@ -51,6 +51,15 @@ public class ErrorHandler {
         );
     }
 
+    @ExceptionHandler(AlreadyExistException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ErrorResponse handleAlreadyExistException(final AlreadyExistException e) {
+        log.error("AlreadyExistException {}", e.getMessage(), e);
+        return new ErrorResponse(
+                e.getMessage()
+        );
+    }
+
     @ExceptionHandler(NotOwnerException.class)
     @ResponseStatus(HttpStatus.FORBIDDEN)
     public ErrorResponse handleNotOwnerException(final NotOwnerException e) {

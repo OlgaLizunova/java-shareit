@@ -170,7 +170,7 @@ class BookingControllerIntegrationTest {
     @Test
     @SneakyThrows
     void getAllUsersBooking() {
-        when(bookingService.getAllUsersBookings(anyLong(), any(State.class), anyInt(), anyInt()))
+        when(bookingService.getAllUsersBookings(anyLong(), anyString(), anyInt(), anyInt()))
                 .thenReturn(List.of(bookingOutputDto));
 
         mvc.perform(get("/bookings")
@@ -195,13 +195,13 @@ class BookingControllerIntegrationTest {
                         .accept(MediaType.APPLICATION_JSON)
                         .param("state", "xyz")
                         .header(HEADER, 1))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isOk());
     }
 
     @Test
     @SneakyThrows
     void getAllOwnersBooking() {
-        when(bookingService.getAllOwnersBookings(anyLong(), any(State.class), anyInt(), anyInt()))
+        when(bookingService.getAllOwnersBookings(anyLong(), anyString(), anyInt(), anyInt()))
                 .thenReturn(List.of(bookingOutputDto));
 
         mvc.perform(get("/bookings/owner")
@@ -226,6 +226,6 @@ class BookingControllerIntegrationTest {
                         .accept(MediaType.APPLICATION_JSON)
                         .param("state", "xyz")
                         .header(HEADER, 1))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isOk());
     }
 }

@@ -8,7 +8,6 @@ import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
-import ru.practicum.shareit.booking.controller.State;
 import ru.practicum.shareit.booking.dto.BookingInputDto;
 import ru.practicum.shareit.booking.dto.BookingOutputDto;
 import ru.practicum.shareit.booking.model.Status;
@@ -493,7 +492,7 @@ public class IntegrationTest {
         );
 
         List<BookingOutputDto> bookingsOutDto =
-                bookingService.getAllUsersBookings(bookerId5, State.ALL, 0, 25);
+                bookingService.getAllUsersBookings(bookerId5, "all", 0, 25);
 
         assertAll(
                 () -> assertNotNull(bookingsOutDto),
@@ -504,7 +503,7 @@ public class IntegrationTest {
         );
 
         List<BookingOutputDto> bookingsOutDtoWait =
-                bookingService.getAllUsersBookings(bookerId5, State.WAITING, 0, 25);
+                bookingService.getAllUsersBookings(bookerId5, "waiting", 0, 25);
         assertAll(
                 () -> assertNotNull(bookingsOutDtoWait),
                 () -> assertEquals(1, bookingsOutDtoWait.size()),
@@ -514,7 +513,7 @@ public class IntegrationTest {
         BookingOutputDto bookingOutputDtoReject1 = bookingService.updateBooking(bookingId2, ownerId2, false);
 
         List<BookingOutputDto> bookingsOutDtoRejected =
-                bookingService.getAllUsersBookings(bookerId5, State.REJECTED, 0, 25);
+                bookingService.getAllUsersBookings(bookerId5, "rejected", 0, 25);
 
         assertAll(
                 () -> assertNotNull(bookingsOutDtoRejected),
@@ -546,7 +545,7 @@ public class IntegrationTest {
         BookingOutputDto bookingOutputDtoFuture = bookingService.updateBooking(bookingId7, ownerId4, true);
 
         List<BookingOutputDto> bookingsOutDtoCurrent =
-                bookingService.getAllUsersBookings(bookerId6, State.CURRENT, 0, 25);
+                bookingService.getAllUsersBookings(bookerId6,"current", 0, 25);
 
         assertAll(
                 () -> assertNotNull(bookingsOutDtoCurrent),
@@ -555,7 +554,7 @@ public class IntegrationTest {
         );
 
         List<BookingOutputDto> bookingsOutDtoPast =
-                bookingService.getAllUsersBookings(bookerId6, State.PAST, 0, 25);
+                bookingService.getAllUsersBookings(bookerId6, "past", 0, 25);
 
         assertAll(
                 () -> assertNotNull(bookingsOutDtoPast),
@@ -564,7 +563,7 @@ public class IntegrationTest {
         );
 
         List<BookingOutputDto> bookingsOutDtoFuture =
-                bookingService.getAllUsersBookings(bookerId6, State.FUTURE, 0, 25);
+                bookingService.getAllUsersBookings(bookerId6, "future", 0, 25);
 
         assertAll(
                 () -> assertNotNull(bookingsOutDtoFuture),
@@ -598,7 +597,7 @@ public class IntegrationTest {
         BookingOutputDto bookingOutputDto9 = bookingService.addBooking(bookingInputDto5, bookerId7);
 
         List<BookingOutputDto> allOwners4Bookings
-                = bookingService.getAllOwnersBookings(ownerId4, State.ALL, 0, 25);
+                = bookingService.getAllOwnersBookings(ownerId4, "all", 0, 25);
 
         assertAll(
                 () -> assertNotNull(allOwners4Bookings),
@@ -608,7 +607,7 @@ public class IntegrationTest {
         );
 
         List<BookingOutputDto> rejectedOwners2Bookings
-                = bookingService.getAllOwnersBookings(ownerId2, State.REJECTED, 0, 25);
+                = bookingService.getAllOwnersBookings(ownerId2, "rejected", 0, 25);
 
         assertAll(
                 () -> assertNotNull(rejectedOwners2Bookings),
@@ -617,7 +616,7 @@ public class IntegrationTest {
         );
 
         List<BookingOutputDto> waitingOwners3Bookings
-                = bookingService.getAllOwnersBookings(ownerId3, State.WAITING, 0, 25);
+                = bookingService.getAllOwnersBookings(ownerId3, "waiting", 0, 25);
 
         assertAll(
                 () -> assertNotNull(waitingOwners3Bookings),
@@ -627,7 +626,7 @@ public class IntegrationTest {
         );
 
         List<BookingOutputDto> futureOwners3Bookings
-                = bookingService.getAllOwnersBookings(ownerId3, State.FUTURE, 0, 25);
+                = bookingService.getAllOwnersBookings(ownerId3, "future", 0, 25);
 
         assertAll(
                 () -> assertNotNull(futureOwners3Bookings),
@@ -638,7 +637,7 @@ public class IntegrationTest {
         );
 
         List<BookingOutputDto> currentOwners2Bookings
-                = bookingService.getAllOwnersBookings(ownerId2, State.CURRENT, 0, 25);
+                = bookingService.getAllOwnersBookings(ownerId2, "current", 0, 25);
 
         assertAll(
                 () -> assertNotNull(currentOwners2Bookings),
@@ -647,7 +646,7 @@ public class IntegrationTest {
         );
 
         List<BookingOutputDto> pastOwners3Bookings
-                = bookingService.getAllOwnersBookings(ownerId3, State.PAST, 0, 25);
+                = bookingService.getAllOwnersBookings(ownerId3, "past", 0, 25);
 
         assertAll(
                 () -> assertNotNull(pastOwners3Bookings),

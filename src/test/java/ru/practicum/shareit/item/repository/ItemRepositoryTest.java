@@ -24,24 +24,24 @@ import static org.junit.jupiter.api.Assertions.*;
 @DataJpaTest
 class ItemRepositoryTest {
     @Autowired
-    ItemRequestRepository requestRepository;
+    private ItemRequestRepository requestRepository;
     @Autowired
-    ItemRepository itemRepository;
+    private ItemRepository itemRepository;
     @Autowired
-    UserRepository userRepository;
-    User requester;
-    User notRequester;
-    User owner1;
-    User owner2;
-    ItemRequest itemRequest1;
-    ItemRequest itemRequest2;
-    ItemRequest itemRequest3;
-    ItemRequest itemRequest4;
-    PageRequest pageable;
-    Item item1;
-    Item item2;
-    Item item3;
-    Item item4;
+    private UserRepository userRepository;
+    private User requester;
+    private User notRequester;
+    private User owner1;
+    private User owner2;
+    private ItemRequest itemRequest1;
+    private ItemRequest itemRequest2;
+    private ItemRequest itemRequest3;
+    private ItemRequest itemRequest4;
+    private PageRequest pageable;
+    private Item item1;
+    private Item item2;
+    private Item item3;
+    private Item item4;
 
     @BeforeEach
     void setUp() {
