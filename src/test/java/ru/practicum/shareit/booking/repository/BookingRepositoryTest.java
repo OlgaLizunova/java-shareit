@@ -208,7 +208,7 @@ class BookingRepositoryTest {
         booking3 = bookingRepository.save(booking3);
         booking4 = bookingRepository.save(booking4);
 
-        List<Booking> ownerBookings = bookingRepository.findAllByBooker_Id(21L, pageable );
+        List<Booking> ownerBookings = bookingRepository.findAllByBooker_Id(21L, pageable);
         assertAll(
                 () -> assertNotNull(ownerBookings),
                 () -> assertEquals(2, ownerBookings.size()),
@@ -245,7 +245,7 @@ class BookingRepositoryTest {
         pageable = PageRequest.of(0, 25, Sort.Direction.DESC, "id");
 
         List<Booking> ownerBookings1 = bookingRepository.findAllByBooker_IdAndEndBefore(1L, now().plusDays(10),
-                pageable );
+                pageable);
         assertAll(
                 () -> assertNotNull(ownerBookings1),
                 () -> assertEquals(1, ownerBookings1.size()),
@@ -281,7 +281,7 @@ class BookingRepositoryTest {
         pageable = PageRequest.of(0, 25, Sort.Direction.DESC, "id");
 
         List<Booking> ownerBookings = bookingRepository.findAllByBooker_IdAndStartAfter(13L, now().minusDays(6),
-                pageable );
+                pageable);
         assertAll(
                 () -> assertNotNull(ownerBookings),
                 () -> assertEquals(1, ownerBookings.size()),
@@ -317,7 +317,7 @@ class BookingRepositoryTest {
         pageable = PageRequest.of(0, 25, Sort.Direction.DESC, "id");
 
         List<Booking> ownerBookings = bookingRepository.findAllByBooker_IdAndStartBeforeAndEndAfter(25L,
-                now().minusDays(4), now().plusDays(5), pageable );
+                now().minusDays(4), now().plusDays(5), pageable);
         assertAll(
                 () -> assertNotNull(ownerBookings),
                 () -> assertEquals(2, ownerBookings.size()),
@@ -354,7 +354,7 @@ class BookingRepositoryTest {
         pageable = PageRequest.of(0, 25, Sort.Direction.DESC, "id");
 
         List<Booking> ownerBookings = bookingRepository.findAllByBooker_IdAndStatus(17L,
-                Status.APPROVED, pageable );
+                Status.APPROVED, pageable);
         assertAll(
                 () -> assertNotNull(ownerBookings),
                 () -> assertEquals(2, ownerBookings.size()),
