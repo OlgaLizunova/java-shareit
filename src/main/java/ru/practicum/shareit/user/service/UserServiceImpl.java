@@ -21,12 +21,11 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
 
-    @Transactional(readOnly = true)
+    @Transactional()
     @Override
     public UserDto addUser(UserDto newUserDto) {
         User newUser = userMapper.toUser(newUserDto);
         User addedUser = userRepository.save(newUser);
-        log.info("Был добавлен пользователь={}", addedUser);
         return userMapper.toUserDto(addedUser);
     }
 

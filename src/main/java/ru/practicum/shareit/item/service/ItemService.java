@@ -15,9 +15,9 @@ public interface ItemService {
 
     ItemWithCommentsOutputDto getItemById(long id, long userId);
 
-    List<ItemWithCommentsOutputDto> getAllOwnersItems(long ownerId);
+    List<ItemWithCommentsOutputDto> getAllOwnersItems(long ownerId, int from, int size);
 
-    List<ItemDto> findItems(String text);
+    List<ItemDto> findItems(String text, int from, int size);
 
     SavedCommentOutputDto addComment(CommentInputDto commentInputDto, long itemId, long userId);
 }

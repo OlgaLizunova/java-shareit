@@ -39,11 +39,6 @@
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
-			<groupId>com.sun.mail</groupId>
-			<artifactId>javax.mail</artifactId>
-			<version>1.6.2</version>
-		</dependency>
-		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-configuration-processor</artifactId>
 			<optional>true</optional>
@@ -273,6 +268,14 @@
 					<plugin>
 						<groupId>org.jacoco</groupId>
 						<artifactId>jacoco-maven-plugin</artifactId>
+						                       <configuration>
+						                            <excludes>
+						                               <exclude>**/model/*</exclude>
+						                                <exclude>**/dto/*</exclude>
+														<exclude>**/dto*</exclude>
+						                              <exclude>ru/practicum/shareit/**/*StorageImpl.*</exclude>
+						                            </excludes>
+						                        </configuration>
 					</plugin>
 				</plugins>
 			</build>

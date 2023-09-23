@@ -21,6 +21,9 @@ import ru.practicum.shareit.item.dto.ItemWithCommentsOutputDto;
 import ru.practicum.shareit.item.dto.mapper.ItemMapper;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.repository.ItemRepository;
+import ru.practicum.shareit.request.model.ItemRequest;
+import ru.practicum.shareit.request.repository.ItemRequestRepository;
+import ru.practicum.shareit.request.utils.PageRequestUtil;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.repository.UserRepository;
 
@@ -45,13 +48,19 @@ public class ItemServiceImpl implements ItemService {
     private final CommentRepository commentRepository;
     private final ItemMapper itemMapper;
     private final CommentMapper commentMapper;
+    private final ItemRequestRepository itemRequestRepository;
 
     @Transactional
+    @Override
     public ItemDto addItem(ItemDto newItemDto, long userId) {
         User owner = findUserById(userId);
         Item newItem = itemMapper.toItem(newItemDto);
 
         newItem.setOwner(owner);
+        if (newItemDto.getRequestId() != null) {
+            ItemRequest request = itemRequestRepository.getReferenceById(newItemDto.getRequestId());
+            newItem.setRequest(request);
+        }
 
         Item addedItem = itemRepository.save(newItem);
         log.info("Добавлена вещь ={}", addedItem);
@@ -95,6 +104,7 @@ public class ItemServiceImpl implements ItemService {
 
         newItem.setId(itemId);
         newItem.setOwner(owner);
+        newItem.setRequest(oldItem.getRequest());
 
         if (Objects.isNull(newItem.getName())) {
             newItem.setName(oldItem.getName());
@@ -113,9 +123,10 @@ public class ItemServiceImpl implements ItemService {
 
     @Transactional(readOnly = true)
     @Override
-    public List<ItemWithCommentsOutputDto> getAllOwnersItems(long ownerId) {
+    public List<ItemWithCommentsOutputDto> getAllOwnersItems(long ownerId, int from, int size) {
         User owner = findUserById(ownerId);
-        List<Item> items = itemRepository.findAllByOwner(owner, Sort.by(Sort.Direction.ASC, "id"));
+        List<Item> items = itemRepository.findAllByOwner(owner,
+                PageRequestUtil.of(from, size, Sort.by(Sort.Direction.ASC, "id")));
         LocalDateTime now = now();
         List<ItemWithCommentsOutputDto> itemWithCommentsOutputDto = findItemsWithLastAndNextBooking(items, now);
 
@@ -129,16 +140,16 @@ public class ItemServiceImpl implements ItemService {
 
     @Transactional(readOnly = true)
     @Override
-    public List<ItemDto> findItems(String text) {
+    public List<ItemDto> findItems(String text, int from, int size) {
         if (text.isBlank()) {
             log.warn("Текст для поиска пустой");
             return Collections.emptyList();
         }
         List<Item> items = itemRepository
-                .findAllByNameOrDescriptionContainingIgnoreCaseAndAvailableIs(text,
+                .findAllByNameContainingIgnoreCaseOrDescriptionContainingIgnoreCaseAndAvailableIs(text,
                         text,
                         true,
-                        Sort.by(Sort.Direction.ASC, "id"));
+                        PageRequestUtil.of(from, size, Sort.by(Sort.Direction.ASC, "id")));
         log.info("Найдены и показаны {} вещи с текстом text={} ", items.size(), text);
         return itemMapper.mapDto(items);
     }

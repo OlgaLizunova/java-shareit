@@ -2,6 +2,7 @@ package ru.practicum.shareit.booking.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -14,17 +15,18 @@ import ru.practicum.shareit.booking.dto.mapper.BookingMapper;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.model.Status;
 import ru.practicum.shareit.booking.repository.BookingRepository;
-import ru.practicum.shareit.booking.service.BookingService;
 import ru.practicum.shareit.exceptions.NotAvailableException;
 import ru.practicum.shareit.exceptions.ElementNotFoundException;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.repository.ItemRepository;
+import ru.practicum.shareit.request.utils.PageRequestUtil;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.repository.UserRepository;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 
 @Slf4j
@@ -93,42 +95,43 @@ public class BookingServiceImpl implements BookingService {
 
     @Transactional(readOnly = true)
     @Override
-    public List<BookingOutputDto> getAllUsersBookings(Long bookerId, State state) {
+    public List<BookingOutputDto> getAllUsersBookings(Long bookerId, String stateParam, int from, int size) {
+        if (from < 0) {
+            throw new IllegalArgumentException(String.format("illegal from: %s", from));
+        }
+        State state;
+        try {
+            state = State.valueOf(stateParam.toUpperCase(Locale.ROOT));
+        } catch (IllegalArgumentException e) {
+            log.error("Unknown state: {}", stateParam);
+            throw new IllegalArgumentException(String.format("Unknown state: %s", stateParam));
+        }
         findUserById(bookerId);
         List<Booking> allUsersBookings = new ArrayList<>();
+        Pageable sortedByStart = PageRequestUtil.of(from, size, Sort.by(Sort.Direction.DESC, "start"));
         LocalDateTime now = LocalDateTime.now();
         switch (state) {
             case ALL:
-                allUsersBookings =
-                        bookingRepository.findAllByBooker_Id(bookerId,
-                                Sort.by(Sort.Direction.DESC, "id"));
+                allUsersBookings = bookingRepository.findAllByBooker_Id(bookerId, sortedByStart);
                 break;
             case PAST:
-                allUsersBookings =
-                        bookingRepository.findAllByBooker_IdAndEndBefore(bookerId, now,
-                                Sort.by(Sort.Direction.DESC, "id"));
+                allUsersBookings = bookingRepository.findAllByBooker_IdAndEndBefore(bookerId, now, sortedByStart);
                 break;
             case FUTURE:
-                allUsersBookings =
-                        bookingRepository.findAllByBooker_IdAndStartAfter(bookerId, now,
-                                Sort.by(Sort.Direction.DESC, "id"));
+                allUsersBookings = bookingRepository.findAllByBooker_IdAndStartAfter(bookerId, now, sortedByStart);
                 break;
             case CURRENT:
-                allUsersBookings =
-                        bookingRepository.findAllByBooker_IdAndStartBeforeAndEndAfter(bookerId,
-                                now,
-                                now,
-                                Sort.by(Sort.Direction.ASC, "id"));
+                allUsersBookings = bookingRepository.findAllByBooker_IdAndStartBeforeAndEndAfter(
+                        bookerId, now, now, sortedByStart);
                 break;
             case WAITING:
-                allUsersBookings =
-                        bookingRepository.findAllByBooker_IdAndStatus(bookerId, Status.WAITING,
-                                Sort.by(Sort.Direction.DESC, "id"));
+                allUsersBookings = bookingRepository.findAllByBooker_IdAndStatus(bookerId, Status.WAITING, sortedByStart);
                 break;
             case REJECTED:
                 allUsersBookings =
-                        bookingRepository.findAllByBooker_IdAndStatus(bookerId, Status.REJECTED,
-                                Sort.by(Sort.Direction.DESC, "id"));
+                        bookingRepository.findAllByBooker_IdAndStatus(bookerId, Status.REJECTED, sortedByStart);
+                break;
+            default:
                 break;
         }
         List<BookingOutputDto> allBookingsDto = bookingMapper.map(allUsersBookings);
@@ -138,42 +141,46 @@ public class BookingServiceImpl implements BookingService {
 
     @Transactional(readOnly = true)
     @Override
-    public List<BookingOutputDto> getAllOwnersBookings(Long ownerId, State state) {
+    public List<BookingOutputDto> getAllOwnersBookings(Long ownerId, String stateParam, int from, int size) {
+        if (from < 0) {
+            throw new IllegalArgumentException(String.format("illegal from: %s", from));
+        }
+        State state;
+        try {
+            state = State.valueOf(stateParam.toUpperCase(Locale.ROOT));
+        } catch (IllegalArgumentException e) {
+            log.error("Unknown state: UNSUPPORTED_STATUS={}", stateParam);
+            throw new IllegalArgumentException("Unknown state: UNSUPPORTED_STATUS");
+        }
         findUserById(ownerId);
         List<Booking> allUsersBookings = new ArrayList<>();
+        Pageable sortedByStart = PageRequestUtil.of(from, size, Sort.by(Sort.Direction.DESC, "start"));
         LocalDateTime now = LocalDateTime.now();
         switch (state) {
             case ALL:
-                allUsersBookings =
-                        bookingRepository.findAllByItemOwnerId(ownerId,
-                                Sort.by(Sort.Direction.DESC, "id"));
+                allUsersBookings = bookingRepository.findAllByItemOwnerId(ownerId, sortedByStart);
                 break;
             case PAST:
-                allUsersBookings =
-                        bookingRepository.findAllByItemOwnerIdAndEndBefore(ownerId, now,
-                                Sort.by(Sort.Direction.DESC, "id"));
+                allUsersBookings = bookingRepository.findAllByItemOwnerIdAndEndBefore(ownerId, now, sortedByStart);
                 break;
             case FUTURE:
                 allUsersBookings =
-                        bookingRepository.findAllByItemOwnerIdAndStartAfter(ownerId, now,
-                                Sort.by(Sort.Direction.DESC, "id"));
+                        bookingRepository.findAllByItemOwnerIdAndStartAfter(ownerId, now, sortedByStart);
                 break;
             case CURRENT:
-                allUsersBookings =
-                        bookingRepository.findAllByItem_Owner_IdAndStartBeforeAndEndAfter(ownerId,
-                                now,
-                                now,
-                                Sort.by(Sort.Direction.DESC, "id"));
+                allUsersBookings = bookingRepository.findAllByItem_Owner_IdAndStartBeforeAndEndAfter(
+                        ownerId, now, now, PageRequestUtil.of(from, size, Sort.by(Sort.Direction.DESC, "id"))
+                );
                 break;
             case WAITING:
                 allUsersBookings =
-                        bookingRepository.findAllByItemOwnerIdAndStatus(ownerId, Status.WAITING,
-                                Sort.by(Sort.Direction.DESC, "id"));
+                        bookingRepository.findAllByItemOwnerIdAndStatus(ownerId, Status.WAITING, sortedByStart);
                 break;
             case REJECTED:
                 allUsersBookings =
-                        bookingRepository.findAllByItemOwnerIdAndStatus(ownerId, Status.REJECTED,
-                                Sort.by(Sort.Direction.DESC, "id"));
+                        bookingRepository.findAllByItemOwnerIdAndStatus(ownerId, Status.REJECTED, sortedByStart);
+                break;
+            default:
                 break;
         }
         List<BookingOutputDto> allBookingsDto = bookingMapper.map(allUsersBookings);

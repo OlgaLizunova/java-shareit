@@ -1,9 +1,6 @@
 package ru.practicum.shareit.booking.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.model.User;
 
@@ -14,23 +11,24 @@ import java.time.LocalDateTime;
 @Data
 @Entity
 @Table(name = "bookings")
+@EqualsAndHashCode
 @AllArgsConstructor
 @NoArgsConstructor
 public class Booking {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    long id;
+    private long id;
     @Column(name = "start_date", nullable = false)
-    LocalDateTime start;
+    private LocalDateTime start;
     @Column(name = "end_date", nullable = false)
-    LocalDateTime end;
+    private LocalDateTime end;
     @ManyToOne(fetch = FetchType.LAZY)
     @ToString.Exclude
-    Item item;
+    private Item item;
     @ManyToOne(fetch = FetchType.LAZY)
     @ToString.Exclude
-    User booker;
+    private User booker;
     @Enumerated(EnumType.STRING)
-    Status status = Status.WAITING;
+    private Status status = Status.WAITING;
 }
 
