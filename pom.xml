@@ -272,6 +272,7 @@
 						                            <excludes>
 						                               <exclude>**/model/*</exclude>
 						                                <exclude>**/dto/*</exclude>
+														<exclude>**/dto*</exclude>
 						                              <exclude>ru/practicum/shareit/**/*StorageImpl.*</exclude>
 						                            </excludes>
 						                        </configuration>
